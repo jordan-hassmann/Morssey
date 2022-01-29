@@ -131,10 +131,15 @@ function morseToEng(morse) {
     };
     //console.log(splitString);
     var plainText = "";
+    english = english.toUpperCase();
     for(var a in english) {
+      
         var b = english[a];
+        console.log(b);
         if (b in engDict) {
+
             plainText+=engDict[b]+" ";
+            //console.log(engDict[b]);
         } else {
             plainText+=" ";
         }
@@ -145,5 +150,5 @@ function morseToEng(morse) {
   // ADD A SPACE IN BETWEEN EACH NEW WORD
   var decoded = morseToEng(".-- --- .-. -.. .-- --- .-. -..");
   console.log(decoded);
-  var test = engToMorse(decoded);
+  var test = engToMorse("I like big buts");
   console.log(test);
