@@ -1,5 +1,7 @@
 
-
+*{
+   white-space: break-spaces;
+}
 
 .header {
    color: white;
@@ -79,7 +81,7 @@
 
 .border {
    width: 100vw;
-   margin-top: calc(-15vh - 374px);
+   margin-top: calc(-15vh - 384px);
    z-index: 10;
    position: relative;
 }
@@ -132,6 +134,9 @@
       justify-content: start;
       align-items: center;
       
+      &.input .option:last-child {
+         margin-left: auto;
+      }
    }
 
    .option {
