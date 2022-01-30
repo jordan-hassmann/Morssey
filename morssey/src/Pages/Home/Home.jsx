@@ -174,11 +174,14 @@ const MorseToEnglish = () => {
 
 const EnglishToMorse = () => {
 
+   const [listening, setListening] = useState(false);
+
+
    const inputOptions = [
       {
-         icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2c1.103 0 2 .897 2 2v7c0 1.103-.897 2-2 2s-2-.897-2-2v-7c0-1.103.897-2 2-2zm0-2c-2.209 0-4 1.791-4 4v7c0 2.209 1.791 4 4 4s4-1.791 4-4v-7c0-2.209-1.791-4-4-4zm8 9v2c0 4.418-3.582 8-8 8s-8-3.582-8-8v-2h2v2c0 3.309 2.691 6 6 6s6-2.691 6-6v-2h2zm-7 13v-2h-2v2h-4v2h10v-2h-4z"/></svg>,
-         onClick: () => console.log("Clicked"),
-         title: 'Speech to text'
+         icon: listening ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16 10c0 2.209-1.791 4-4 4s-4-1.791-4-4v-6c0-2.209 1.791-4 4-4s4 1.791 4 4v6zm4-2v2c0 4.418-3.582 8-8 8s-8-3.582-8-8v-2h2v2c0 3.309 2.691 6 6 6s6-2.691 6-6v-2h2zm-7 13.03v-2.03h-2v2.03c-2.282.139-4 .744-4 1.47 0 .829 2.238 1.5 5 1.5s5-.671 5-1.5c0-.726-1.718-1.331-4-1.47z"/></svg> : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2c1.103 0 2 .897 2 2v7c0 1.103-.897 2-2 2s-2-.897-2-2v-7c0-1.103.897-2 2-2zm0-2c-2.209 0-4 1.791-4 4v7c0 2.209 1.791 4 4 4s4-1.791 4-4v-7c0-2.209-1.791-4-4-4zm8 9v2c0 4.418-3.582 8-8 8s-8-3.582-8-8v-2h2v2c0 3.309 2.691 6 6 6s6-2.691 6-6v-2h2zm-7 13v-2h-2v2h-4v2h10v-2h-4z"/></svg>,
+         onClick: () => SpeechToText(),
+         title: listening ? 'Stop listening' : 'Speech to text'
       },
       {
          icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 10h-5l9-10 9 10h-5v10h-8v-10zm11 9v3h-14v-3h-2v5h18v-5h-2z"/></svg>,
@@ -219,12 +222,74 @@ const EnglishToMorse = () => {
    const [input, setInput] = useState('');
    const [output, setOutput] = useState('Output...');
 
+   const SpeechToText = () => {
+      setListening(!listening);
+
+      const el = document.querySelector('.input-area1');
+
+      let speechRecognition = new window.webkitSpeechRecognition()
+      let final_transcript = "";
+      
+      speechRecognition.continuous = true;
+      speechRecognition.interimResults = true;
+      speechRecognition.start();
+      speechRecognition.onresult = (event) => {
+         let interim_transcript = "";
+      
+         for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+            final_transcript += event.results[i][0].transcript;
+            } else {
+            interim_transcript += event.results[i][0].transcript;
+            }
+         }
+         el.innerHTML = interim_transcript;
+         setInput(interim_transcript);
+      };
+            
+      if(listening)
+         speechRecognition.stop();
+   }
+   
+   const vibrate = (v) => {
+      let morseString = v;
+   
+       let vibeArr = []
+       for(let k = 0; k < morseString.length; k++) {
+           let c = morseString.charAt(k)
+   
+           if(c == ".") {
+               vibeArr.push(500)
+               vibeArr.push(150)
+           }
+           else if(c == "-") {
+               vibeArr.push(1000)
+               vibeArr.push(150)
+           }
+           else
+               vibeArr.push(2500)
+       }
+   
+       if (!window) {
+           return;
+       }
+   
+       if (!window.navigator) {
+           return;
+       }
+   
+       if (!window.navigator.vibrate) {
+           return;
+       }
+   
+       window.navigator.vibrate(vibeArr);
+   }
 
    return (
       <div className="english-to-morse section">
          <h2>English to Morse Code</h2>
          <div className="section-content">
-            <textarea  placeholder='Enter text here...'  onChange={ e => setInput(e.target.value) }/>
+            <textarea  placeholder='Enter text here...'  className='input-area1' onChange={ e => setInput(e.target.value) }/>
 
             <div className="options input">
                {
@@ -261,39 +326,6 @@ const EnglishToMorse = () => {
    );
 }
 
-const vibrate = (v) => {
-   let morseString = v;
-
-    let vibeArr = []
-    for(let k = 0; k < morseString.length; k++) {
-        let c = morseString.charAt(k)
-
-        if(c == ".") {
-            vibeArr.push(500)
-            vibeArr.push(150)
-        }
-        else if(c == "-") {
-            vibeArr.push(1000)
-            vibeArr.push(150)
-        }
-        else
-            vibeArr.push(2500)
-    }
-
-    if (!window) {
-        return;
-    }
-
-    if (!window.navigator) {
-        return;
-    }
-
-    if (!window.navigator.vibrate) {
-        return;
-    }
-
-    window.navigator.vibrate(vibeArr);
-}
 
 const Header = () => {
 
