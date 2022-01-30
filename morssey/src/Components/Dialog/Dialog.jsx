@@ -10,7 +10,9 @@ const Dialog = ({ open, setOpen, setInputVal }) => {
 
    const handleMouseDown = () => {
       if (started) {
-         if (Date.now() - startTime > 1000) {
+         if (Date.now() - startTime > 2000) {
+            output.current.innerHTML = output.current.innerHTML + '  '
+         } else if (Date.now() - startTime > 1000) {
             output.current.innerHTML = output.current.innerHTML + ' '
          }
       } else setStarted(true);
