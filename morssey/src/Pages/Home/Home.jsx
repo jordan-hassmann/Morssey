@@ -1,11 +1,12 @@
 import './Home.scss';
-import {morseToEng } from '../../translator.js';
-import {engToMorse } from '../../translator.js';
+import { morseToEng } from '../../translator.js';
+import { engToMorse } from '../../translator.js';
 import {tts} from '../../textToSpeech.js';
 import './Home.scss';
 import {saveAs} from "file-saver";
 import { useState, useEffect } from 'react';
 import Border from '../../Assets/layered-steps-haikei.svg'
+import Border2 from '../../Assets/layered-steps-haikei (1).svg';
 import Dialog from '../../Components/Dialog/Dialog';
 
 import MorseCWWave from 'morse-pro/lib/morse-pro-cw-wave.js';
@@ -473,6 +474,7 @@ const HomePage = () => {
       <HeaderDemo />
       <img src={Border} className='border' />
       <MorseToEnglish />
+      <img src={Border2} className='border2' />
       <EnglishToMorse />
 
       
