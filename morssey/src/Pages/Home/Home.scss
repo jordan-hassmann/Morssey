@@ -6,7 +6,7 @@
 .header {
    color: white;
    text-align: center;
-   margin-top: 5vh;
+   margin-top: 15vh;
    z-index: 100;
    position: relative;
    display: flex;
@@ -81,7 +81,7 @@
 
 .border {
    width: 100vw;
-   margin-top: calc(-5vh - 484px);
+   margin-top: calc(-15vh - 384px);
    z-index: 10;
    position: relative;
 }
