@@ -3,7 +3,7 @@ import {morseToEng } from '../../translator.js';
 import {engToMorse } from '../../translator.js';
 import {tts} from '../../textToSpeech.js';
 import './Home.scss';
-
+import {saveAs} from "file-saver";
 import { useState, useEffect } from 'react';
 import Border from '../../Assets/layered-steps-haikei.svg'
 import Dialog from '../../Components/Dialog/Dialog';
@@ -15,6 +15,7 @@ var morseCWWave = new MorseCWWave();
 morseCWWave.translate("");
 var morsePlayerWAALight = new MorsePlayerWAALight();
 morsePlayerWAALight.loadCWWave(morseCWWave);
+var blob = new Blob([""],{type: "text/plain;charset=utf-8"})
 
 
 
@@ -133,8 +134,11 @@ const MorseToEnglish = () => {
       },
       {
          icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16 11h5l-9 10-9-10h5v-11h8v11zm3 8v3h-14v-3h-2v5h18v-5h-2z"/></svg>,
-         onClick: () => console.log("Clicked"),
-         title: 'Download output text'
+         onClick: () => {
+            blob = new Blob([output],{type: "text/plain;charset=utf-8"})
+            saveAs(blob,"donwload.txt")
+         },
+         title: 'Download output text',
       }
    ]
 
@@ -225,7 +229,10 @@ const EnglishToMorse = () => {
       },
       {
          icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16 11h5l-9 10-9-10h5v-11h8v11zm3 8v3h-14v-3h-2v5h18v-5h-2z"/></svg>,
-         onClick: () => console.log("Clicked"),
+         onClick: () => {
+            blob = new Blob([output],{type: "text/plain;charset=utf-8"})
+            saveAs(blob,"donwload.txt")
+         },
          title: 'Download output text'
       }
    ]
