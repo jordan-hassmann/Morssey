@@ -4,7 +4,6 @@ import {engToMorse } from '../../translator.js';
 import {tts} from '../../textToSpeech.js';
 import './Home.scss';
 
-import { useReactMediaRecorder } from "react-media-recorder";
 import { useState, useEffect } from 'react';
 import Border from '../../Assets/layered-steps-haikei.svg'
 
@@ -12,7 +11,7 @@ import MorseCWWave from 'morse-pro/lib/morse-pro-cw-wave.js';
 import MorsePlayerWAALight from 'morse-pro/lib/morse-pro-player-waa-light';
 
 var morseCWWave = new MorseCWWave();
-morseCWWave.translate("abc");
+morseCWWave.translate("");
 var morsePlayerWAALight = new MorsePlayerWAALight();
 morsePlayerWAALight.loadCWWave(morseCWWave);
 
@@ -77,7 +76,7 @@ const MorseToEnglish = () => {
 
          // If the duration of silence is >100 and we haven't added a space yet, add a space
          if (silenceDuration > 80 && !addedSpace && el.innerHTML !== '') {  
-            el.innerHTML = el.innerHTML + '_'
+            el.innerHTML = el.innerHTML + ' '
             addedSpace = true;
          }
 
@@ -217,7 +216,7 @@ const EnglishToMorse = () => {
       }
    ]
 
-   const [input, setInput] = useState('sdf');
+   const [input, setInput] = useState('');
    const [output, setOutput] = useState('Output...');
 
 
@@ -225,7 +224,7 @@ const EnglishToMorse = () => {
       <div className="english-to-morse section">
          <h2>English to Morse Code</h2>
          <div className="section-content">
-            <textarea  placeholder='Enter text heree...'  onChange={ e => setInput(e.target.value) }/>
+            <textarea  placeholder='Enter text here...'  onChange={ e => setInput(e.target.value) }/>
 
             <div className="options">
                {
