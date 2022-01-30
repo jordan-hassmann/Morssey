@@ -5,13 +5,90 @@ import { useState, useEffect } from 'react';
 import Border from '../../Assets/layered-steps-haikei.svg'
 
 
+
+
 const MorseToEnglish = () => {
+
+   const [animationID, setAnimationID] = useState();
+   const [listening, setListening] = useState(false);
+
+   const startListening = async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      const audioContext = new AudioContext();
+      const mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream);
+      const analyserNode = audioContext.createAnalyser();
+      mediaStreamAudioSourceNode.connect(analyserNode);
+
+
+      let listening        = false;
+      let addedSpace       = false;
+      let noiseDuration    = 0;
+      let silenceDuration  = 0;
+      const pcmData = new Float32Array(analyserNode.fftSize);
+
+
+      const onFrame = () => {
+         const el = document.querySelector('.input-area')
+
+
+         analyserNode.getFloatTimeDomainData(pcmData);
+         let sumSquares = 0.0;
+         for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; }
+
+         // If the sound goes above 10 (We are making a noise), check the flag
+         if (sumSquares > 10 && !listening) {
+            listening = true;
+         } 
+
+         // If we're currently listening and the sound goes above 50, increase count
+         else if (sumSquares > 40 && listening) { 
+            noiseDuration++;
+            silenceDuration = 0;
+         }
+
+         // If the volume goes down and we WERE listening, apply correct symbol
+         if (sumSquares < 5 && listening) {
+            // Add correct symbol
+            el.innerHTML = noiseDuration > 15 ? el.innerHTML + '-' : el.innerHTML + '.'
+
+            // Reset values
+            addedSpace = false
+            silenceDuration = 0;
+            listening = false
+            noiseDuration = 0;
+         }
+
+         // If the volume is negligable and we havne't added a space yet, increase silence count
+         if (sumSquares < 5 && !addedSpace) silenceDuration++;
+
+         // If the duration of silence is >100 and we haven't added a space yet, add a space
+         if (silenceDuration > 80 && !addedSpace && el.innerHTML !== '') {  
+            el.innerHTML = el.innerHTML + '_'
+            addedSpace = true;
+         }
+
+
+         setAnimationID(window.requestAnimationFrame(onFrame));
+      };
+      setAnimationID(window.requestAnimationFrame(onFrame));
+   }
+
+   const stopListening = () => {
+      window.cancelAnimationFrame(animationID)
+   }
+
+   const toggleListening = () => {
+      setListening(!listening)
+      if (listening) stopListening()
+      else startListening()
+   }
+
 
    const inputOptions = [
       {
-         icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2c1.103 0 2 .897 2 2v7c0 1.103-.897 2-2 2s-2-.897-2-2v-7c0-1.103.897-2 2-2zm0-2c-2.209 0-4 1.791-4 4v7c0 2.209 1.791 4 4 4s4-1.791 4-4v-7c0-2.209-1.791-4-4-4zm8 9v2c0 4.418-3.582 8-8 8s-8-3.582-8-8v-2h2v2c0 3.309 2.691 6 6 6s6-2.691 6-6v-2h2zm-7 13v-2h-2v2h-4v2h10v-2h-4z"/></svg>,
-         onClick: () => console.log("Clicked"),
-         title: 'Input via audio'
+         icon: listening ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16 10c0 2.209-1.791 4-4 4s-4-1.791-4-4v-6c0-2.209 1.791-4 4-4s4 1.791 4 4v6zm4-2v2c0 4.418-3.582 8-8 8s-8-3.582-8-8v-2h2v2c0 3.309 2.691 6 6 6s6-2.691 6-6v-2h2zm-7 13.03v-2.03h-2v2.03c-2.282.139-4 .744-4 1.47 0 .829 2.238 1.5 5 1.5s5-.671 5-1.5c0-.726-1.718-1.331-4-1.47z"/></svg> : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2c1.103 0 2 .897 2 2v7c0 1.103-.897 2-2 2s-2-.897-2-2v-7c0-1.103.897-2 2-2zm0-2c-2.209 0-4 1.791-4 4v7c0 2.209 1.791 4 4 4s4-1.791 4-4v-7c0-2.209-1.791-4-4-4zm8 9v2c0 4.418-3.582 8-8 8s-8-3.582-8-8v-2h2v2c0 3.309 2.691 6 6 6s6-2.691 6-6v-2h2zm-7 13v-2h-2v2h-4v2h10v-2h-4z"/></svg>,
+         onClick: () => toggleListening(),
+         title: listening ? 'Stop listening' : 'Input via audio'
       },
       {
          icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 10h-5l9-10 9 10h-5v10h-8v-10zm11 9v3h-14v-3h-2v5h18v-5h-2z"/></svg>,
@@ -46,7 +123,7 @@ const MorseToEnglish = () => {
       <div className="morse-to-english section">
          <h2>Morse Code to English</h2>
          <div className="section-content">
-            <textarea placeholder='Enter morse here...' onChange={ e => setInput(e.target.value) }/>
+            <textarea placeholder='Enter morse here...' className='input-area' onChange={ e => setInput(e.target.value) }/>
             <div className="options">
                {
                   inputOptions.map(({ icon, onClick, title }) => (
@@ -220,6 +297,9 @@ const HeaderDemo = () => {
       
    }
 
+   
+
+
    useEffect(() => {
       
       type()
@@ -242,22 +322,17 @@ const HeaderDemo = () => {
 
 
 const HomePage = () => {
-  const {
-      status,
-      startRecording,
-      stopRecording,
-      mediaBlobUrl,
-   } = useReactMediaRecorder({ video: false });
+
+   
 
   return (
     <div className='home-page'>
-      {/* <p>{status}</p>
-      <button onClick={startRecording}>Start Recording</button>
-      <button onClick={stopRecording}>Stop Recording</button>
-      <audio src={mediaBlobUrl} controls autoPlay /> */}
 
       <Header />
       <HeaderDemo />
+      {/* <button onClick={ startListening } style={{ backgroundColor: 'red', zIndex: '20', position: 'relative' }}>test</button>
+      <button onClick={ stopListening }>Stop</button>
+      <div className="volume-meter"></div> */}
       <img src={Border} alt="" className='border' />
       <MorseToEnglish />
       <EnglishToMorse />
