@@ -11,6 +11,7 @@ import Dialog from '../../Components/Dialog/Dialog';
 import MorseCWWave from 'morse-pro/lib/morse-pro-cw-wave.js';
 import MorsePlayerWAALight from 'morse-pro/lib/morse-pro-player-waa-light';
 import FileDropDialog from '../../Components/FileDropDialog/FileDropDialog';
+import FileDropDialogEnglishToMorse from '../../Components/FileDropDialogEnglishToMorse/FileDropDialog'
 
 var morseCWWave = new MorseCWWave();
 morseCWWave.translate("");
@@ -200,7 +201,8 @@ const MorseToEnglish = () => {
          <FileDropDialog 
             open={ openFileDrop } 
             setOpen={ setOpenFileDrop } 
-            setInput={ setInput } />
+            setInput={ setInput } 
+         />
       </div>
    );
 }
@@ -208,6 +210,10 @@ const MorseToEnglish = () => {
 const EnglishToMorse = () => {
 
    const [listening, setListening] = useState(false);
+   const [input, setInput] = useState('');
+   const [output, setOutput] = useState('Output...');
+   const [openFileDrop, setOpenFileDrop] = useState(false);
+   
 
 
    const inputOptions = [
@@ -218,7 +224,7 @@ const EnglishToMorse = () => {
       },
       {
          icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 10h-5l9-10 9 10h-5v10h-8v-10zm11 9v3h-14v-3h-2v5h18v-5h-2z"/></svg>,
-         onClick: () => console.log("Clicked"),
+         onClick: () => setOpenFileDrop(true),
          title: 'Upload .txt file'
       },
       {
@@ -255,8 +261,7 @@ const EnglishToMorse = () => {
       }
    ]
 
-   const [input, setInput] = useState('');
-   const [output, setOutput] = useState('Output...');
+   
 
    const SpeechToText = () => {
       setListening(!listening);
@@ -325,7 +330,7 @@ const EnglishToMorse = () => {
       <div className="english-to-morse section">
          <h2>English to Morse Code</h2>
          <div className="section-content">
-            <textarea  placeholder='Enter text here...'  className='input-area1' onChange={ e => setInput(e.target.value) }/>
+            <textarea value={input}  placeholder='Enter text here...'  className='input-area1' onChange={ e => setInput(e.target.value) }/>
 
             <div className="options input">
                {
@@ -356,7 +361,11 @@ const EnglishToMorse = () => {
             </div>
          </div>
 
-
+         <FileDropDialogEnglishToMorse 
+            open={ openFileDrop } 
+            setOpen={ setOpenFileDrop } 
+            setInput={ setInput } 
+         />
 
       </div>
    );
