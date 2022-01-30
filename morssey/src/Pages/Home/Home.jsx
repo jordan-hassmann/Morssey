@@ -93,6 +93,7 @@ const MorseToEnglish = () => {
 
    const stopListening = () => {
       window.cancelAnimationFrame(animationID)
+      setInput(document.querySelector('.input-area').innerHTML)
    }
 
    const toggleListening = () => {
@@ -138,8 +139,9 @@ const MorseToEnglish = () => {
    ]
 
 
-   const setInputVal = input => {
-      document.querySelector('.input-area').innerHTML = input;
+   const setInputVal = i => {
+      document.querySelector('.input-area').innerHTML = i;
+      setInput(i)
    }
 
 
