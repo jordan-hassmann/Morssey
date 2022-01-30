@@ -238,9 +238,9 @@ const EnglishToMorse = () => {
       
          for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
-            final_transcript += event.results[i][0].transcript;
+               final_transcript += event.results[i][0].transcript;
             } else {
-            interim_transcript += event.results[i][0].transcript;
+               interim_transcript += event.results[i][0].transcript;
             }
          }
          el.innerHTML = interim_transcript;
