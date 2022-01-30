@@ -1,7 +1,8 @@
 import './Home.scss';
 
 import { useReactMediaRecorder } from "react-media-recorder";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Border from '../../Assets/layered-steps-haikei.svg'
 
 
 const MorseToEnglish = () => {
@@ -153,6 +154,93 @@ const EnglishToMorse = () => {
 }
 
 
+const Header = () => {
+
+
+   return (
+      <div className="header">
+         <h1>Morssey</h1>
+         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint fuga facilis nam libero optio earum impedit voluptatum repellat omnis tempora fugit similique accusamus quisquam, iusto expedita quas corrupti reprehenderit</p>
+      </div>
+   )
+}
+
+
+const HeaderDemo = () => {
+
+   const inputs = [
+      {
+         in: 'hello world',
+         out: '.... . .-.. .-.. ---  .-- --- .-. .-.. -..'
+      },
+      {
+         in: 'happy hacking',
+         out: '.... .- .--. .--. -.--  .... .- -.-. -.- .. -. --.'
+      },
+      {
+         in: 'goodbye',
+         out: '--. --- --- -.. -... -.-- .'
+      }
+   ]
+
+   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+   const typeWord = async (word, el, speed) => {
+      for (let i = 0; i < word.length; i++) {
+         el.innerHTML = el.innerHTML + word[i]
+         await sleep(speed)
+      }
+   }
+
+   const deleteWord = async (word, el, speed) => {
+      for (let i = 0; i < word.length; i++) {
+         el.innerHTML = el.innerHTML.slice(0, -1);
+         await sleep(speed)
+      }
+   }
+
+   const type = async () => {
+      const inputEl = document.querySelector('.demo').querySelector('.input').firstElementChild;
+      const outputEl = document.querySelector('.demo').querySelector('.output').firstElementChild;
+      
+      await sleep(3000);
+
+      for (let i = 0; true; i++) {
+         const input = inputs[i % 3].in
+         const output = inputs[i % 3].out
+
+         await typeWord(input, inputEl, 100)
+         await sleep(100)
+         await typeWord(output, outputEl, 50)
+         await sleep(2000)
+         await deleteWord(output, outputEl, 50)
+         await sleep(100)
+         await deleteWord(input, inputEl, 50)
+      }
+      
+   }
+
+   useEffect(() => {
+      
+      type()
+   }, []);
+   
+
+
+   return (
+
+      <div className="demo">
+         <div className="input">
+            <span></span>
+         </div>
+         <div className="output">
+            <span></span>
+         </div>   
+      </div>
+   )
+}
+
+
 const HomePage = () => {
   const {
       status,
@@ -162,12 +250,15 @@ const HomePage = () => {
    } = useReactMediaRecorder({ video: false });
 
   return (
-    <div>
+    <div className='home-page'>
       {/* <p>{status}</p>
       <button onClick={startRecording}>Start Recording</button>
       <button onClick={stopRecording}>Stop Recording</button>
       <audio src={mediaBlobUrl} controls autoPlay /> */}
 
+      <Header />
+      <HeaderDemo />
+      <img src={Border} alt="" className='border' />
       <MorseToEnglish />
       <EnglishToMorse />
 
