@@ -134,6 +134,9 @@
       justify-content: start;
       align-items: center;
       
+      &.input .option:last-child {
+         margin-left: auto;
+      }
    }
 
    .option {
