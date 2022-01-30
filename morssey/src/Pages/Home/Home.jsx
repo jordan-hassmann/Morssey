@@ -378,7 +378,7 @@ const Header = () => {
    return (
       <div className="header">
          <h1>Morssey</h1>
-         <p>Your new go to unniversal, bi-directional morse code translator. It fits all situations whether it's converting to morse from sound, voice, text file, or keyboard, or morse to sound, voice, or text.</p>
+         <p>Your new go to universal, bi-directional Morse Code translator. It fits all situations whether it's converting to morse from sound, voice, text file, or keyboard, or morse to sound, voice, or text.</p>
       </div>
    )
 }
