@@ -2,8 +2,12 @@ import './Home.scss';
 import {morseToEng } from '../../translator.js';
 import {engToMorse } from '../../translator.js';
 import {tts} from '../../textToSpeech.js';
+import './Home.scss';
+
 import { useReactMediaRecorder } from "react-media-recorder";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Border from '../../Assets/layered-steps-haikei.svg'
+
 import MorseCWWave from '/Users/tajbounds/Documents/GitHub/Morssey/morssey/src/morse-pro/lib/morse-pro-cw-wave.js';
 import MorsePlayerWAALight from '/Users/tajbounds/Documents/GitHub/Morssey/morssey/src/morse-pro/lib/morse-pro-player-waa-light';
 
