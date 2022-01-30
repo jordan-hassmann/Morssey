@@ -1,7 +1,18 @@
 import './Home.scss';
-
+import {morseToEng } from '../../translator.js';
+import {engToMorse } from '../../translator.js';
+import {tts} from '../../textToSpeech.js';
 import { useReactMediaRecorder } from "react-media-recorder";
 import { useState } from 'react';
+import MorseCWWave from '/Users/tajbounds/Documents/GitHub/Morssey/morssey/src/morse-pro/lib/morse-pro-cw-wave.js';
+import MorsePlayerWAALight from '/Users/tajbounds/Documents/GitHub/Morssey/morssey/src/morse-pro/lib/morse-pro-player-waa-light';
+
+var morseCWWave = new MorseCWWave();
+morseCWWave.translate("abc");
+var morsePlayerWAALight = new MorsePlayerWAALight();
+morsePlayerWAALight.loadCWWave(morseCWWave);
+
+
 
 
 const MorseToEnglish = () => {
@@ -26,7 +37,7 @@ const MorseToEnglish = () => {
    const outputOptions = [
       {
          icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 17h-5v-10h5v10zm2-10v10l9 5v-20l-9 5zm17 4h-5v2h5v-2zm-1.584-6.232l-4.332 2.5 1 1.732 4.332-2.5-1-1.732zm1 12.732l-4.332-2.5-1 1.732 4.332 2.5 1-1.732z"/></svg>,
-         onClick: () => console.log("Clicked"),
+         onClick: () => tts(output),
          title: 'Output via audio'
       },
       {
@@ -49,14 +60,14 @@ const MorseToEnglish = () => {
             <div className="options">
                {
                   inputOptions.map(({ icon, onClick, title }) => (
-                     <button className="option" onClick={ onClick }>
+                     <button className="option" onClick={ ()=>setOutput(morseToEng(input)) }>
                         { icon }
                         <span>{ title }</span>
                      </button>
                   ))
                }
             </div>
-
+               {/*()=>setOutput(morseToEng(input))*/}
             <div className="output">
                <span className='placeholder'>{ output }</span>
             </div>
@@ -93,12 +104,19 @@ const EnglishToMorse = () => {
    const outputOptions = [
       {
          icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 17h-5v-10h5v10zm2-10v10l9 5v-20l-9 5zm17 4h-5v2h5v-2zm-1.584-6.232l-4.332 2.5 1 1.732 4.332-2.5-1-1.732zm1 12.732l-4.332-2.5-1 1.732 4.332 2.5 1-1.732z"/></svg>,
-         onClick: () => console.log("Clicked"),
+         onClick: () => {console.log(input)
+         //morseCWWave = new MorseCWWave()
+         morseCWWave.translate(input)
+         //morsePlayerWAALight = new MorsePlayerWAALight()
+         morsePlayerWAALight.loadCWWave(morseCWWave)
+         morsePlayerWAALight.playFromStart()},
+         
          title: 'Output via audio'
       },
       {
          icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 2c-1.105 0-2 .896-2 2v14.678c-.001 2.213 2.503 3.322 6.005 3.322 3.499 0 5.995-1.106 5.995-3.322v-14.678c0-1.104-.895-2-2-2h-8zm4 18c-.552 0-1-.448-1-1s.448-1 1-1 1 .448 1 1-.448 1-1 1zm4-4h-8v-10h8v10zm4-7.459c.496.495.803 1.179.803 1.935.001.755-.305 1.44-.8 1.936l.814.814c.703-.704 1.139-1.677 1.139-2.751-.001-1.075-.436-2.046-1.141-2.749l-.815.815zm1.427-1.426c.86.859 1.393 2.046 1.393 3.358.001 1.313-.532 2.502-1.391 3.363l.834.835c1.074-1.075 1.738-2.56 1.737-4.198 0-1.639-.664-3.121-1.737-4.193l-.836.835zm-18.241.611c-.705.703-1.14 1.674-1.141 2.748s.435 2.047 1.139 2.751l.814-.814c-.495-.496-.8-1.18-.8-1.936s.307-1.44.802-1.935l-.814-.814zm-1.447-1.447c-1.075 1.073-1.738 2.554-1.739 4.194-.001 1.638.664 3.124 1.737 4.198l.834-.835c-.859-.861-1.391-2.05-1.39-3.363 0-1.312.531-2.5 1.392-3.358l-.834-.836z"/></svg>,
          onClick: () => console.log("Clicked"),
+         
          title: 'Output via vibrations'
       },
       {
@@ -108,7 +126,7 @@ const EnglishToMorse = () => {
       }
    ]
 
-   const [input, setInput] = useState('');
+   const [input, setInput] = useState('sdf');
    const [output, setOutput] = useState('Output...');
 
 
@@ -116,11 +134,18 @@ const EnglishToMorse = () => {
       <div className="english-to-morse section">
          <h2>English to Morse Code</h2>
          <div className="section-content">
-            <textarea placeholder='Enter text here...' onChange={ e => setInput(e.target.value) }/>
+            <textarea  placeholder='Enter text heree...'  onChange={ e => setInput(e.target.value) }/>
+
             <div className="options">
                {
                   inputOptions.map(({ icon, onClick, title }) => (
-                     <button className="option" onClick={ onClick }>
+                     
+                     <button className="option" onClick={()=>
+                     {  setOutput(engToMorse(input))
+                        console.log(engToMorse(input))
+                        console.log(output);
+                     }}>
+
                         { icon }
                         <span>{ title }</span>
                      </button>
@@ -128,6 +153,7 @@ const EnglishToMorse = () => {
                   ))
                }
             </div>
+            {/* ()=>setOutput(engToMorse(input))*/}
 
 
             <div className="output">

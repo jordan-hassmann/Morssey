@@ -1,4 +1,4 @@
-function morseToEng(morse) {
+export function morseToEng(morse) {
     var morseDict = { 
       '.-':'A',
       '-...':'B',
@@ -56,11 +56,14 @@ function morseToEng(morse) {
       '...-..-':'$',
       '.--.-.':'@',
     };
+    morse+=" ";
     var splitString = morse.split(" ");
     //console.log(splitString);
     var plainText = "";
     for(var a in splitString) {
+        console.log(a);
         var b = splitString[a];
+
         if (b in morseDict) {
             plainText+=morseDict[b];
         } else {
@@ -68,10 +71,12 @@ function morseToEng(morse) {
         }
         
     }
+    console.log(plainText);
     return plainText;
   }
 
-  function engToMorse(english) {
+ export function engToMorse(english) {
+
     var engDict = { 
       'A':'.-',
       'B':'-...',
@@ -109,7 +114,6 @@ function morseToEng(morse) {
       '8':'---..',
       '9':'----.',
       '0':'-----',
-
       '.':'.-.-.-',
       ',':'--..--',
       '?':'..--..',
@@ -128,14 +132,18 @@ function morseToEng(morse) {
       '"':'.-..-.',
       '$':'...-..-',
       '@':'.--.-.',
+        
+
     };
     //console.log(splitString);
     var plainText = "";
     english = english.toUpperCase();
+    console.log(english);
     for(var a in english) {
       
         var b = english[a];
-        console.log(b);
+
+        //console.log(b);
         if (b in engDict) {
 
             plainText+=engDict[b]+" ";
@@ -145,10 +153,11 @@ function morseToEng(morse) {
         }
         
     }
+    console.log(plainText);
     return plainText;
   }
   // ADD A SPACE IN BETWEEN EACH NEW WORD
-  var decoded = morseToEng(".-- --- .-. -.. .-- --- .-. -..");
-  console.log(decoded);
-  var test = engToMorse("I like big buts");
-  console.log(test);
+  //var decoded = morseToEng(".-- --- .-. -.. .-- --- .-. -..");
+  //console.log(decoded);
+  //var test = engToMorse("I like big buts");
+  //console.log(test);
