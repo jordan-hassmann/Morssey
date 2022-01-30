@@ -31,7 +31,6 @@ const MorseToEnglish = () => {
    const [output, setOutput] = useState('Output...');
    const [openPopup, setOpenPopup] = useState(false);
    const [openFileDrop, setOpenFileDrop] = useState(false);
-   const [file, setFile] = useState();
 
 
    const startListening = async () => {
@@ -44,6 +43,7 @@ const MorseToEnglish = () => {
 
       let listening        = false;
       let addedSpace       = false;
+      let secondSpace      = false;
       let noiseDuration    = 0;
       let silenceDuration  = 0;
       const pcmData = new Float32Array(analyserNode.fftSize);
@@ -56,6 +56,8 @@ const MorseToEnglish = () => {
          analyserNode.getFloatTimeDomainData(pcmData);
          let sumSquares = 0.0;
          for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; }
+         console.log(addedSpace, secondSpace)
+         console.log(silenceDuration)
 
          // If the sound goes above 10 (We are making a noise), check the flag
          if (sumSquares > 10 && !listening) {
@@ -71,22 +73,33 @@ const MorseToEnglish = () => {
          // If the volume goes down and we WERE listening, apply correct symbol
          if (sumSquares < 5 && listening) {
             // Add correct symbol
-            el.innerHTML = noiseDuration > 15 ? el.innerHTML + '-' : el.innerHTML + '.'
+            const symbol = noiseDuration > 15 ? el.innerHTML + '-' : el.innerHTML + '.'
+            const newInput = input + symbol
+            setInput(newInput)
 
             // Reset values
             addedSpace = false
+            secondSpace = false
             silenceDuration = 0;
             listening = false
             noiseDuration = 0;
          }
 
          // If the volume is negligable and we havne't added a space yet, increase silence count
-         if (sumSquares < 5 && !addedSpace) silenceDuration++;
+         if (sumSquares < 5 && (!addedSpace || !secondSpace)) silenceDuration++;
 
          // If the duration of silence is >100 and we haven't added a space yet, add a space
-         if (silenceDuration > 80 && !addedSpace && el.innerHTML !== '') {  
-            el.innerHTML = el.innerHTML + ' '
+         if (silenceDuration > 80 && !addedSpace && el.innerHTML !== '') {
+            const newInput = el.innerHTML + ' '  
+            setInput(newInput)
             addedSpace = true;
+         }
+
+         // If we've added the first space and haven't added the second one and the silence duration > 200, add a space
+         if (silenceDuration > 160 && addedSpace && !secondSpace) {
+            const newInput = el.innerHTML + ' '  
+            setInput(newInput)
+            secondSpace = true;
          }
 
 
